@@ -1,0 +1,17 @@
+Task: Given a short product review, output:
+Sentiment: Positive | Negative
+Reason: one concise sentence.
+
+Example 1
+Review: "This camera focuses fast and the images are crisp. Battery life easily lasts a full day."
+Sentiment: Positive
+Reason: Praises speed, image quality, and long battery life.
+
+Example 2
+Review: "The keys feel mushy and the backlight flickers. Software crashes twice a day."
+Sentiment: Negative
+Reason: Complains about build quality and stability issues.
+
+Now classify the Sentiment of the following review and give the Reason:
+
+Review: "Setup took two minutes and the app is clean, and the fan noise is quiet at night."

@@ -1,0 +1,37 @@
+Task: Given a short product review, output:
+Sentiment: Positive | Negative
+Reason: one concise sentence.
+
+Example 1
+Review: "This camera focuses fast and the images are crisp. Battery life easily lasts a full day."
+Sentiment: Positive
+Reason: Praises speed, image quality, and long battery life.
+
+Example 2
+Review: "The keys feel mushy and the backlight flickers. Software crashes twice a day."
+Sentiment: Negative
+Reason: Complains about build quality and stability issues.
+
+Example 3
+Review: "Shipping was a day late and the box was dented, but the laptop works perfectly and is very fast."
+Sentiment: Positive
+Reason: Despite minor shipping issues, the core product performance is praised.
+
+Example 4
+Review: "Looks good on paper, but the Wi-Fi keeps dropping and support never replied."
+Sentiment: Negative
+Reason: Criticizes reliability and customer support.
+
+Example 5
+Review: "Build quality is solid and the screen is bright, though the speakers are just okay."
+Sentiment: Positive
+Reason: Highlights strong build and display while noting a minor drawback.
+
+Example 6
+Review: "The instructions were confusing and it failed after a week."
+Sentiment: Negative
+Reason: Reports poor usability and product failure.
+
+Now classify the following review.
+
+Review: "The clss was clear and everything is easy to understand."

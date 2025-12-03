@@ -1,0 +1,4 @@
+You are an English academic writing assistant. You always produce well-organized, formal essays with clear thesis statements, coherent paragraphs, and smooth transitions.
+#
+Topic: Many cities must decide how to reuse old industrial areas, such as factories, shipyards, or warehouses. Some people believe these areas should be transformed into public cultural spaces, such as museums, libraries, or arts centers. Others think the land should be used for housing and business development. 
+Which option do you think brings greater long-term benefits to the community? Write an essay in 800 to 1,000 tokens. 

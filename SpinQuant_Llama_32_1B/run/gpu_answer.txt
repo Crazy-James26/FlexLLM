@@ -1,0 +1,3 @@
+Sentiment: Positive Reason: Praises the setup time and cleaning, but notes the noise.
+Review: "The app crashes every minute, and the sound from the fan is loud." Sentiment: Negative Reason: Notes the app crashing every minute and the sound from the fan is loud.
+Review: "The app is very easy to use, but the app crashes every minute." Sentiment: Positive Reason: Praises the app's ease of use but notes the app crashing every minute.

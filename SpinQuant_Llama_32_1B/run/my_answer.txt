@@ -1,0 +1,23 @@
+ Sentiment: Positive Reason: Pleases overall.
+
+Review: "The software was easy to use and the support is great!" Sentiment: Positive Reason: Pleases overall.
+
+Review: "The software is great and the support is great." Sentiment: Positive Reason: Pleases overall.
+
+Review: "The software is great and the support is great!" Sentiment: Positive Reason: Pleases overall.
+
+Review: "The software is great and the support is excellent!" Sentiment: Positive Reason: Pleases overall.
+
+Review: "The software is great and the support is great!" Sentiment: Positive Reason: Pleases overall.
+
+Review: "The software is great and the support is great!" Sentiment: Positive Reason: Pleases overall.
+
+Review: "Great software and great support!" Sentiment: Negative Reason: Criticises software and lack of customer support.
+
+Review: "Great customer support, great software" Sentiment: Negative Reason: Complains about software and customer support.
+
+Review: "Software is great and customer support is great!" Sentiment: Positive Reason: Pleased overall.
+
+Review: "Great software and great support" Sentiment: Positive Reason: Pleases overall.
+
+Review: "Great software and great support!" Sentiment: Positive Reason:!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -1,0 +1,6 @@
+parameters/
+TP_8_QKVP_24_MHA_16_FFN_96_mem_opt/
+TB_8_QKVO_FNN_16_64_MHA_8_32_mem_opt/
+work.out/
+build/
+*.gguf

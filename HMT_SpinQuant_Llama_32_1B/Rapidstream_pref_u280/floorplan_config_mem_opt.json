@@ -1,0 +1,76 @@
+{
+  "max_seconds": 3000,
+  "dse_range_min": 0.6,
+  "dse_range_max": 0.8,
+  "partition_strategy": "flat",
+  "cell_pre_assignments": {
+    "hmt_segment_loader_sync_0": "SLOT_X1Y0:SLOT_X1Y0",
+
+    "hmt_weight_loader_qk_attn_0": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_weight_loader_qk_attn_1": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_weight_loader_qk_attn_2": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_weight_loader_qk_attn_3": "SLOT_X1Y0:SLOT_X1Y0",
+
+    "hmt_Linear_Layer_fp32xfp32_qk_attn_input_merger_0": "SLOT_X1Y1:SLOT_X1Y2",
+    "hmt_Linear_Layer_fp32xfp32_qk_attn_0": "SLOT_X1Y2:SLOT_X1Y2",
+    "hmt_Linear_Layer_fp32xfp32_qk_attn_output_merger_0": "SLOT_X1Y1:SLOT_X1Y2",
+    "hmt_memory_cache_manager_0": "SLOT_X1Y2:SLOT_X1Y2",
+    "hmt_k_mem_cache_manager_0": "SLOT_X1Y2:SLOT_X1Y2",
+    "hmt_attn_softmax_0": "SLOT_X1Y2:SLOT_X1Y2",
+
+    "hmt_pref_control_0": "SLOT_X1Y1:SLOT_X1Y2",
+
+    "hmt_pref_Linear_Layer_i4xi4_kq_0": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_pref_Linear_Layer_i4xi4_vo_0": "SLOT_X1Y0:SLOT_X1Y0",
+    
+    "hmt_pref_K_cache_manager_0": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_pref_MHA_i8xi8_qxk_0": "SLOT_X1Y1:SLOT_X1Y1",
+    "hmt_pref_V_cache_manager_0": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_pref_MHA_i8xi8_axv_0": "SLOT_X1Y1:SLOT_X1Y1",
+
+    
+    "hmt_pref_quant_layer_ffn_gate_fp32_int4_0": "SLOT_X0Y2:SLOT_X1Y2",
+    "hmt_pref_Linear_Layer_i4xi4_ffn_gate_0": "SLOT_X0Y2:SLOT_X0Y2",
+    "hmt_pref_dequant_layer_ffn_gate_int_fp32_0": "SLOT_X0Y2:SLOT_X1Y2",
+
+    "hmt_pref_quant_layer_ffn_up_fp32_int4_0": "SLOT_X0Y1:SLOT_X1Y1",
+    "hmt_pref_Linear_Layer_i4xi4_ffn_up_0": "SLOT_X0Y1:SLOT_X0Y1",
+    "hmt_pref_dequant_layer_ffn_up_int_fp32_0": "SLOT_X0Y1:SLOT_X1Y1",
+
+    "hmt_pref_Swish_Layer_ffn_0": "SLOT_X0Y0:SLOT_X1Y1",
+    "hmt_pref_Gate_Layer_ffn_0": "SLOT_X0Y0:SLOT_X1Y1",
+    "hmt_pref_FHT_R4_0": "SLOT_X0Y0:SLOT_X1Y1",
+
+    "hmt_pref_quant_layer_ffn_down_fp32_int4_0": "SLOT_X0Y0:SLOT_X1Y0",
+    "hmt_pref_Linear_Layer_i4xi4_ffn_down_0": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_dequant_layer_ffn_down_int_fp32_0": "SLOT_X0Y0:SLOT_X1Y0",
+
+    "hmt_pref_weight_loader_w_ffn_down_0": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_down_1": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_down_2": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_gate_0": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_gate_1": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_gate_2": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_up_0": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_up_1": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_w_ffn_up_2": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_loader_wk_wq_0": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_pref_weight_loader_wv_wo_0": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_pref_weight_s_loader_w_ffn_down_0": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_s_loader_w_ffn_gate_0": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_s_loader_w_ffn_up_0": "SLOT_X0Y0:SLOT_X0Y0",
+    "hmt_pref_weight_s_loader_wk_wq_0": "SLOT_X1Y0:SLOT_X1Y0",
+    "hmt_pref_weight_s_loader_wv_wo_0": "SLOT_X0Y0:SLOT_X0Y0"
+
+  },
+
+  "port_pre_assignments": {
+    ".*": "SLOT_X0Y0:SLOT_X1Y2"
+  },
+  "grouping_constraints": [],
+  "reserved_slot_to_cells": {},
+  "partition_schedule": [],
+  "slot_to_rtype_to_min_limit": {},
+  "slot_to_rtype_to_max_limit": {},
+  "ignore_narrow_edge_threshold": 1
+}

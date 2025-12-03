@@ -1,0 +1,10 @@
+{
+  "vitis_platform": "xilinx_u280_gen3x16_xdma_1_202211_1",
+  "port_to_clock_period": {
+    "ap_clk": 3.33
+  },
+  "placement_strategy": "Explore",
+  "max_workers": 4,
+  "max_synth_jobs": 16,
+  "is_versal": false
+}

@@ -1,0 +1,116 @@
+
+export FLEXLLM_HOME=/home/jameszhang23/FlexLLM
+
+sq_pref_u280:
+	cp -r /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/parameters ./
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.cpp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.h /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.txt /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.ini ./
+	tapa g++ -- SpinQuant_Prefilling_tb.cpp -o SpinQuant_Prefilling  -I$FLEXLLM_HOME/Modules
+	./SpinQuant_Prefilling 
+	tapa compile -j 128 --top SpinQuant_Prefilling --platform xilinx_u280_gen3x16_xdma_1_202211_1 --clock-period 3.33 -f SpinQuant_Prefilling.h -c -I"$FLEXLLM_HOME/Modules" -o SpinQuant_Prefilling.xo 
+
+	./SpinQuant_Prefilling --bitstream SpinQuant_Prefilling.xo -xosim_work_dir ./work.out -xosim_save_waveform
+
+	mkdir RapidStream
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/RapidStream_pref_u280/*.json RapidStream/
+	rapidstream-tapaopt \
+	-j 32 \
+	--work-dir ./RapidStream/build \
+	--tapa-xo-path SpinQuant_Prefilling.xo \
+	--device-config ./RapidStream/u280_device.json \
+	--floorplan-config ./RapidStream/floorplan_config.json \
+	--pipeline-config ./RapidStream/pipeline_config.json \
+	--run-impl \
+	--implementation-config ./RapidStream/impl_config.json \
+	--connectivity-ini pref_link_config_u280.ini
+
+
+
+sq_pref_u280_mem_opt:
+	cp -r /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/parameters ./
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.cpp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.h /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.txt /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.ini ./
+	tapa g++ -- SpinQuant_Prefilling_mem_opt_tb.cpp -o SpinQuant_Prefilling_mem_opt -I$FLEXLLM_HOME/Modules
+	./SpinQuant_Prefilling_mem_opt
+	tapa compile -j 128 --top SpinQuant_Prefilling --platform xilinx_u280_gen3x16_xdma_1_202211_1 --clock-period 3.33 -f SpinQuant_Prefilling_mem_opt.h -c -I"$FLEXLLM_HOME/Modules" -o SpinQuant_Prefilling.xo
+
+	mkdir RapidStream
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/RapidStream_pref_u280/*.json RapidStream/
+
+	rapidstream-tapaopt \
+    -j 32 \
+    --work-dir ./RapidStream/build \
+    --tapa-xo-path SpinQuant_Prefilling.xo \
+    --device-config ./RapidStream/u280_device.json \
+    --floorplan-config ./RapidStream/floorplan_config_mem_opt.json \
+    --pipeline-config ./RapidStream/pipeline_config.json \
+    --run-impl \
+    --implementation-config ./RapidStream/impl_config.json \
+    --connectivity-ini pref_link_config_u280_mem_opt.ini
+
+
+
+
+sq_dec_u280:
+	cp -r /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/parameters ./
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.cpp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.h /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.txt /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.ini ./
+	tapa g++ -- SpinQuant_Decoding_tb.cpp -o SpinQuant_Decoding -I$FLEXLLM_HOME/Modules
+	./SpinQuant_Decoding
+	tapa compile -j 128 --top SpinQuant_Decoding --platform xilinx_u280_gen3x16_xdma_1_202211_1 --clock-period 3.33 -f SpinQuant_Decoding.h -c -I"$FLEXLLM_HOME/Modules" -o SpinQuant_Decoding.xo
+
+	mkdir RapidStream
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/RapidStream_dec_u280/*.json RapidStream/
+
+	rapidstream-tapaopt \
+    -j 32 \
+    --work-dir ./RapidStream/build \
+    --tapa-xo-path SpinQuant_Decoding.xo \
+    --device-config ./RapidStream/u280_device.json \
+    --floorplan-config ./RapidStream/floorplan_config.json \
+    --pipeline-config ./RapidStream/pipeline_config.json \
+    --run-impl \
+    --implementation-config ./RapidStream/impl_config.json \
+    --connectivity-ini dec_link_config_u280.ini
+
+	./SpinQuant_Decoding --bitstream SpinQuant_Decoding.xo -xosim_work_dir ./work.out -xosim_save_waveform
+
+
+sq_dec_u280_mem_opt:
+	cp -r /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/parameters ./
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.cpp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.h /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.txt /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/*.ini ./
+	tapa g++ -- SpinQuant_Decoding_mem_opt_tb.cpp -o SpinQuant_Decoding_mem_opt -I$FLEXLLM_HOME/Modules
+	./SpinQuant_Decoding_mem_opt
+	tapa compile -j 128 --top SpinQuant_Decoding --platform xilinx_u280_gen3x16_xdma_1_202211_1 --clock-period 3.33 -f SpinQuant_Decoding_mem_opt.h -c -I"$FLEXLLM_HOME/Modules" -o SpinQuant_Decoding.xo
+
+	mkdir RapidStream
+	cp /home/jameszhang23/FlexLLM/SpinQuant_Llama_32_1B/RapidStream_dec_u280/*.json RapidStream/
+
+	rapidstream-tapaopt \
+	-j 32 \
+	--work-dir ./RapidStream/build \
+	--tapa-xo-path SpinQuant_Decoding.xo \
+	--device-config ./RapidStream/u280_device.json \
+	--floorplan-config ./RapidStream/floorplan_config_mem_opt.json \
+	--pipeline-config ./RapidStream/pipeline_config.json \
+	--run-impl \
+	--implementation-config ./RapidStream/impl_config.json \
+	--connectivity-ini dec_link_config_u280_mem_opt.ini
+
+	./SpinQuant_Decoding_mem_opt --bitstream SpinQuant_Decoding.xo -xosim_work_dir ./work.out -xosim_save_waveform
+
+
+sq_demo:
+	export FLEXLLM_HOME=~/FlexLLM
+	export LLAMA_CPP_ROOT=~/llama.cpp
+
+	tapa g++ -- SpinQuant_Prefilling_Decoding_mem_opt_demo.cpp \
+		-I$FLEXLLM_HOME/Modules \
+		-I$LLAMA_CPP_ROOT \
+		-I$LLAMA_CPP_ROOT/include \
+		-I$LLAMA_CPP_ROOT/ggml/include \
+		-I$LLAMA_CPP_ROOT/ggml/include/ggml \
+		$LLAMA_CPP_ROOT/build/bin/libllama.so \
+		-Wl,-rpath,$LLAMA_CPP_ROOT/build/bin \
+		-lpthread -ldl -lm \
+		-o run/SpinQuant_Prefilling_Decoding_mem_opt_demo
+
+
+

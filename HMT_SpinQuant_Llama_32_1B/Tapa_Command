@@ -1,0 +1,48 @@
+
+export FLEXLLM_HOME=/home/jameszhang23/FlexLLM
+
+hmt_sq_pref_u280:
+	cp -r ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/parameters ./
+	cp ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.cpp ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.h ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.txt ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.ini ./
+	tapa g++ -- HMT_SpinQuant_Prefilling_tb.cpp -o HMT_SpinQuant_Prefilling -I$FLEXLLM_HOME/Modules
+	./HMT_SpinQuant_Prefilling
+	tapa compile -j 128 --top HMT_SpinQuant_Prefilling --platform xilinx_u280_gen3x16_xdma_1_202211_1 --clock-period 3.33 -f HMT_SpinQuant_Prefilling.h -c -I"$FLEXLLM_HOME/Modules" -o HMT_SpinQuant_Prefilling.xo
+
+	mkdir RapidStream
+	cp /home/jameszhang23/FlexLLM/HMT_SpinQuant_Llama_32_1B/Rapidstream_pref_u280/*.json RapidStream/
+
+	rapidstream-tapaopt \
+	-j 32 \
+	--work-dir ./RapidStream/build \
+	--tapa-xo-path HMT_SpinQuant_Prefilling.xo \
+	--device-config ./RapidStream/u280_device.json \
+	--floorplan-config ./RapidStream/floorplan_config.json \
+	--pipeline-config ./RapidStream/pipeline_config.json \
+	--run-impl \
+	--implementation-config ./RapidStream/impl_config.json \
+	--connectivity-ini hmt_pref_link_config_u280.ini
+
+	./HMT_SpinQuant_Prefilling --bitstream HMT_SpinQuant_Prefilling.xo -xosim_work_dir ./work.out -xosim_save_waveform
+
+
+
+hmt_sq_pref_u280_mem_opt:
+	cp -r ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/parameters ./
+	cp ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.cpp ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.h ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.txt ~/FlexLLM/HMT_SpinQuant_Llama_32_1B/*.ini ./
+	tapa g++ -- HMT_SpinQuant_Prefilling_mem_opt_tb.cpp -o HMT_SpinQuant_Prefilling_mem_opt -I$FLEXLLM_HOME/Modules
+	./HMT_SpinQuant_Prefilling_mem_opt
+	tapa compile -j 128 --top HMT_SpinQuant_Prefilling --platform xilinx_u280_gen3x16_xdma_1_202211_1 --clock-period 3.33 -f HMT_SpinQuant_Prefilling_mem_opt.h -c -I"$FLEXLLM_HOME/Modules" -o HMT_SpinQuant_Prefilling.xo
+
+	mkdir RapidStream
+	cp /home/jameszhang23/FlexLLM/HMT_SpinQuant_Llama_32_1B/Rapidstream_pref_u280/*.json RapidStream/
+
+	rapidstream-tapaopt \
+    -j 32 \
+    --work-dir ./RapidStream/build \
+    --tapa-xo-path HMT_SpinQuant_Prefilling.xo \
+    --device-config ./RapidStream/u280_device.json \
+    --floorplan-config ./RapidStream/floorplan_config_mem_opt_96.json \
+    --pipeline-config ./RapidStream/pipeline_config.json \
+    --run-impl \
+    --implementation-config ./RapidStream/impl_config.json \
+    --connectivity-ini hmt_pref_link_config_u280_mem_opt_96.ini
