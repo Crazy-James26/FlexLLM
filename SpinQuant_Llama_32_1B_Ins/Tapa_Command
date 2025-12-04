@@ -112,7 +112,7 @@ sq_demo:
 		-o run/SpinQuant_Prefilling_Decoding_mem_opt_demo
 
 	
-./SpinQuant_Prefilling_Decoding_mem_opt_demo \
+	./SpinQuant_Prefilling_Decoding_mem_opt_demo \
 		--bitstream_pref bitstreams/SpinQuant_Prefilling_mem_opt_xilinx_u280_gen3x16_xdma_1_202211_1.xclbin \
 		--bitstream_dec bitstreams/SpinQuant_Decoding_mem_opt_xilinx_u280_gen3x16_xdma_1_202211_1.xclbin \
 		llama-3.2-1b-f16.gguf my_prompt.txt my_answer.txt

@@ -65,7 +65,7 @@ FlexLLM/
 
 Download parameters & GGUF from:
 
-https://drive.google.com/drive/folders/149QLnEm-NT3fhCgB4Uy7Xda1oLu2zk-7?usp=sharing
+https://drive.google.com/drive/folders/1KyEL9gC9Wge9l1m5t2lc79uQhK0jYyq8?usp=sharing
 
 Place them in:
 
