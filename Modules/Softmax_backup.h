@@ -172,8 +172,6 @@ void pref_Softmax(
         #pragma HLS ARRAY_PARTITION variable=cd_attn_exp_sum complete
         T attn_max[io_parallel];
         #pragma HLS ARRAY_PARTITION variable=attn_max complete
-        T attn_max_partial[io_parallel][4];
-        #pragma HLS ARRAY_PARTITION variable=attn_max_partial complete
 
         io_block_loop_versal: for (int M = 0; M < seq_len/io_parallel; M++){
             #pragma HLS loop_tripcount min=1 max=max_seq_len/io_parallel
@@ -182,10 +180,7 @@ void pref_Softmax(
                 #pragma HLS unroll
                     attn_exp_sum[i] = 0;
                     if(enable_sub_max) {
-                        attn_max_partial[i][0] = -1e32;
-                        attn_max_partial[i][1] = -1e32;
-                        attn_max_partial[i][2] = -1e32;
-                        attn_max_partial[i][3] = -1e32;
+                        attn_max[i] = -1e32;
                     }
                 }
 
@@ -195,20 +190,11 @@ void pref_Softmax(
                     #pragma HLS pipeline II=1
                         hls::vector<T, io_parallel> temp_pack = input_stream.read();
                         for(int i = 0; i < io_parallel; i++){
-                            if(temp_pack[i] >  attn_max_partial[i][k % 4]) attn_max_partial[i][k % 4] = temp_pack[i];
+                            attn_max[i] = temp_pack[i] > attn_max[i] ? temp_pack[i] : attn_max[i];
                             attn_exp[i][k] = temp_pack[i];
                         }
                     }
-                    max_reduce_loop_versal: for(int i = 0; i < io_parallel; i++){
-                    #pragma HLS unroll
-                        T a = attn_max_partial[i][0];
-                        T b = attn_max_partial[i][1];
-                        T c = attn_max_partial[i][2];
-                        T d = attn_max_partial[i][3];
-                        T ab_max = a > b ? a : b;
-                        T cd_max = c > d ? c : d;
-                        attn_max[i] = ab_max > cd_max ? ab_max : cd_max;
-                    }
+
                     exp_loop_max_t_versal: for (int k = 0; k < io_hidden_dim; k++) {
                     #pragma HLS loop_tripcount min=1 max=max_hidden_dim
                     #pragma HLS pipeline II=1
@@ -367,18 +353,15 @@ void dec_Softmax(
         #pragma HLS ARRAY_PARTITION variable=attn_exp dim=1 complete
         T attn_exp_sum[block_parallel];
         #pragma HLS ARRAY_PARTITION variable=attn_exp_sum complete
-        T attn_max_partial[block_parallel][4];
-        #pragma HLS ARRAY_PARTITION variable=attn_max_partial complete
+        T attn_max[block_parallel];
+        #pragma HLS ARRAY_PARTITION variable=attn_max complete
 
 
         for(int i = 0; i < block_parallel; i++){
         #pragma HLS unroll
             attn_exp_sum[i] = 0;
             if(enable_sub_max) {
-                attn_max_partial[i][0] = -1e32;
-                attn_max_partial[i][1] = -1e32;
-                attn_max_partial[i][2] = -1e32;
-                attn_max_partial[i][3] = -1e32;
+                attn_max[i] = -1e6;
             }
         }
 
@@ -388,21 +371,14 @@ void dec_Softmax(
             #pragma HLS pipeline II=1
                 hls::vector<T, block_parallel> temp_pack = input_stream.read();
                 for(int i = 0; i < block_parallel; i++){
-                    if(temp_pack[i] >  attn_max_partial[i][k % 4]) attn_max_partial[i][k % 4] = temp_pack[i];
+                    attn_max[i] = temp_pack[i] > attn_max[i] ? temp_pack[i] : attn_max[i];
                     attn_exp[i][k] = temp_pack[i];
                 }
             }
 
-            T attn_max = -1e32;
-            max_reduce_loop_versal: for(int i = 0; i < block_parallel; i++){
-                T a = attn_max_partial[i][0];
-                T b = attn_max_partial[i][1];
-                T c = attn_max_partial[i][2];
-                T d = attn_max_partial[i][3];
-                T ab_max = a > b ? a : b;
-                T cd_max = c > d ? c : d;
-                T temp_max = ab_max > cd_max ? ab_max : cd_max;
-                attn_max = temp_max > attn_max ? temp_max : attn_max;
+            T attn_max_token = attn_max[0];
+            for(int i = 1; i < block_parallel; i++){
+                attn_max_token = attn_max[i] > attn_max_token ? attn_max[i] : attn_max_token;
             }
 
             exp_loop_max_t_versal: for (int k = 0; k < io_hidden_dim/block_parallel; k++) {
@@ -410,8 +386,8 @@ void dec_Softmax(
             #pragma HLS pipeline II=1
                 for(int i = 0; i < block_parallel; i++){
                     T temp;
-                    if(enable_scale) temp = exp((attn_exp[i][k] - attn_max)/scale_factor);
-                    else temp = exp((attn_exp[i][k] - attn_max));
+                    if(enable_scale) temp = exp((attn_exp[i][k] - attn_max_token)/scale_factor);
+                    else temp = exp((attn_exp[i][k] - attn_max_token));
                     attn_exp[i][k] = temp;
                     attn_exp_sum[i] += temp;
                 }
@@ -607,7 +583,7 @@ void dec_MHA_Softmax(
                             T temp;
                             if(enable_scale) temp = exp(temp_pack_3[i]/scale_factor);
                             else temp = exp(temp_pack_3[i]);
-                            attn_exp[i][4 * k + 3] = temp; 
+                            attn_exp[i][4 * k + 3] = temp;
                             attn_exp_sum[i][3] += temp; 
                         }
                     }   
@@ -640,25 +616,17 @@ void dec_MHA_Softmax(
         #pragma HLS ARRAY_PARTITION variable=attn_exp dim=1 complete
         T attn_exp_sum[head_parallel];
         #pragma HLS ARRAY_PARTITION variable=attn_exp_sum complete
-        T attn_exp_sum_partial[head_parallel][2];
-        #pragma HLS ARRAY_PARTITION variable=attn_exp_sum_partial complete
         T cd_attn_exp_sum[head_parallel];
         #pragma HLS ARRAY_PARTITION variable=cd_attn_exp_sum complete
         T attn_max[head_parallel];
         #pragma HLS ARRAY_PARTITION variable=attn_max complete
-        T attn_max_partial[head_parallel][4];
-        #pragma HLS ARRAY_PARTITION variable=attn_max_partial complete
 
         attn_head_loop_versal: for (int H = 0; H < head_num/head_parallel; H++){
             for(int i = 0; i < head_parallel; i++){
             #pragma HLS unroll
-                attn_exp_sum_partial[i][0] = 0;
-                attn_exp_sum_partial[i][1] = 0;
+                attn_exp_sum[i] = 0;
                 if(enable_sub_max) {
-                    attn_max_partial[i][0] = -1e32;
-                    attn_max_partial[i][1] = -1e32;
-                    attn_max_partial[i][2] = -1e32;
-                    attn_max_partial[i][3] = -1e32;
+                    attn_max[i] = -1e32;
                 }
             }
 
@@ -668,38 +636,21 @@ void dec_MHA_Softmax(
                 #pragma HLS pipeline II=1
                     hls::vector<T, head_parallel> temp_pack = input_stream.read();
                     for(int i = 0; i < head_parallel; i++){
-                        if(temp_pack[i] > attn_max_partial[i][k % 4]) attn_max_partial[i][k % 4] = temp_pack[i];
+                        attn_max[i] = temp_pack[i] > attn_max[i] ? temp_pack[i] : attn_max[i];
                         attn_exp[i][k] = temp_pack[i];
                     }
-                }
-
-                max_reduce_loop_versal: for (int i = 0; i < head_parallel; i++) {
-                #pragma HLS UNROLL
-                    T a = attn_max_partial[i][0];
-                    T b = attn_max_partial[i][1];
-                    T c = attn_max_partial[i][2];
-                    T d = attn_max_partial[i][3];
-                    T ab_max = (a > b) ? a : b;
-                    T cd_max = (c > d) ? c : d;
-                    attn_max[i] = (ab_max > cd_max) ? ab_max : cd_max;
                 }
 
                 exp_loop_max_t_versal: for (int k = 0; k < io_hidden_dim; k++) {
                 #pragma HLS loop_tripcount min=1 max=max_hidden_dim
                 #pragma HLS pipeline II=1
                     for(int i = 0; i < head_parallel; i++){
-                        T dif = attn_exp[i][k] - attn_max[i];
-                        T exp_val;
-                        if(enable_scale) exp_val = exp(dif/scale_factor);
-                        else exp_val = exp(dif);
-                        attn_exp[i][k] = exp_val;
-                        attn_exp_sum_partial[i][k % 2] += exp_val;
+                        T temp;
+                        if(enable_scale) temp = exp((attn_exp[i][k] - attn_max[i])/scale_factor);
+                        else temp = exp((attn_exp[i][k] - attn_max[i]));
+                        attn_exp[i][k] = temp;
+                        attn_exp_sum[i] += temp;
                     }
-                }
-
-                exp_sum_reduce_loop_t_versal: for (int i = 0; i < head_parallel; i++) {
-                #pragma HLS UNROLL
-                    attn_exp_sum[i] = attn_exp_sum_partial[i][0] + attn_exp_sum_partial[i][1];
                 }
             }
 
@@ -709,16 +660,12 @@ void dec_MHA_Softmax(
                 #pragma HLS pipeline II=1
                     hls::vector<T, head_parallel> temp_pack = input_stream.read();
                     for(int i = 0; i < head_parallel; i++){
-                        T exp_val;
-                        if(enable_scale) exp_val = exp(temp_pack[i]/scale_factor);
-                        else exp_val = exp(temp_pack[i]);
-                        attn_exp[i][k] = exp_val;
-                        attn_exp_sum_partial[i][k % 2] += exp_val;
+                        T temp;
+                        if(enable_scale) temp = exp(temp_pack[i]/scale_factor);
+                        else temp = exp(temp_pack[i]);
+                        attn_exp[i][k] = temp;
+                        attn_exp_sum[i] += temp;
                     }
-                }
-                exp_sum_reduce_loop_f_versal: for (int i = 0; i < head_parallel; i++) {
-                #pragma HLS UNROLL
-                    attn_exp_sum[i] = attn_exp_sum_partial[i][0] + attn_exp_sum_partial[i][1];
                 }
             }
 

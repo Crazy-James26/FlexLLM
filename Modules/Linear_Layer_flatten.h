@@ -21,15 +21,17 @@ void dec_Linear_Layer_input_broadcastor(
     #pragma HLS pipeline II=1
         hls::vector<T, block_parallel> A_pack = input_seq.read();
         for (int i = 0; i < block_parallel; i++) {
-            A[i * input_hidden_dim/block_parallel + k] = A_pack[i]; //block partition
+            A[i * max_input_dim/block_parallel + k] = A_pack[i]; //block partition
         }
     }
 
     weight_block_loop: for(int N = 0; N < output_hidden_dim/(block_parallel * weight_parallel); N++){
-        init_block_AB: for(int k = 0; k < input_hidden_dim; k++){
-        #pragma HLS PIPELINE II=1
-            for (int i = 0; i < block_parallel; i++) {
-                input_loaders[i].write(A[k]);
+        init_block_AB: for(int K = 0; K < block_parallel; K++){
+            for(int k = 0; k < input_hidden_dim/block_parallel; k++){
+            #pragma HLS PIPELINE II=1
+                for (int i = 0; i < block_parallel; i++) {
+                    input_loaders[i].write(A[K * max_input_dim/block_parallel + k]);
+                }
             }
         }
     }

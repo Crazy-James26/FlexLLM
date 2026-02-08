@@ -375,7 +375,6 @@ void dec_quant_layer_fp32_qint(
     final_max = input_max[0];
     final_min = input_min[0];
     final_max_min_loop: for(int m = 1; m < block_parallel; m++){
-    #pragma HLS PIPELINE II=1
         if(input_max[m] > final_max) final_max = input_max[m];
         if(input_min[m] < final_min) final_min = input_min[m];
     }

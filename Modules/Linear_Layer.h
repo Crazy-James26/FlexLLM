@@ -886,18 +886,20 @@ void dec_Linear_Layer_i4xi4(
     #pragma HLS pipeline II=1
         hls::vector<ap_int<4>, block_parallel> A_pack = input_seq.read();
         for (int i = 0; i < block_parallel; i++) {
-            A[i * input_hidden_dim/block_parallel + k] = A_pack[i]; //block partition
+            A[i * max_input_dim/block_parallel + k] = A_pack[i]; //block partition
             // A[k * block_parallel + i] = A_pack[i]; //cyclic partition
         }
     }
 
     weight_block_loop: for(int N = 0; N < output_hidden_dim/(block_parallel * weight_parallel); N++){
     #pragma HLS DATAFLOW
-        init_block_AB: for(int k = 0; k < input_hidden_dim; k++){
-        #pragma HLS PIPELINE II=1
-            for (int i = 0; i < block_parallel; i++) {
-                block_A_loader[i].write(A[k]);
-                block_B_loader[i].write(weight_loaders[i].read());
+        init_block_AB: for(int K = 0; K < block_parallel; K++){
+            for(int k = 0; k < input_hidden_dim/block_parallel; k++){
+            #pragma HLS PIPELINE II=1
+                for (int i = 0; i < block_parallel; i++) {
+                    block_A_loader[i].write(A[K * max_input_dim/block_parallel + k]);
+                    block_B_loader[i].write(weight_loaders[i].read());
+                }
             }
         }
         // if acitivation is asymmetric quantized, then input datatype is ap_uint<4>
@@ -948,18 +950,19 @@ void dec_Linear_Layer_i4xi4_unroll(
     #pragma HLS pipeline II=1
         hls::vector<ap_int<4>, block_parallel> A_pack = input_seq.read();
         for (int i = 0; i < block_parallel; i++) {
-            A[i * input_hidden_dim/block_parallel + k] = A_pack[i]; //block partition
-            // A[k * block_parallel + i] = A_pack[i]; //cyclic partition
+            A[i * max_input_dim/block_parallel + k] = A_pack[i]; //block partition
         }
     }
 
     weight_block_loop: for(int N = 0; N < output_hidden_dim/(block_parallel * weight_parallel); N++){
     #pragma HLS DATAFLOW
-        init_block_AB: for(int k = 0; k < input_hidden_dim; k++){
-        #pragma HLS PIPELINE II=1
-            for (int i = 0; i < block_parallel/unroll_parallel; i++) {
-                block_A_loader[i].write(A[k]);
-                block_B_loader[i].write(weight_loaders[i].read());
+        init_block_AB: for(int K = 0; K < block_parallel; K++){
+            for(int k = 0; k < input_hidden_dim/block_parallel; k++){
+            #pragma HLS PIPELINE II=1
+                for (int i = 0; i < block_parallel/unroll_parallel; i++) {
+                    block_A_loader[i].write(A[K * max_input_dim/block_parallel + k]);
+                    block_B_loader[i].write(weight_loaders[i].read());
+                }
             }
         }
         // if acitivation is asymmetric quantized, then input datatype is ap_uint<4>
@@ -1061,18 +1064,20 @@ void dec_Linear_Layer_fp32xfp32(
     #pragma HLS pipeline II=1
         hls::vector<float, block_parallel> A_pack = input_seq.read();
         for (int i = 0; i < block_parallel; i++) {
-            A[i * input_hidden_dim/block_parallel + k] = A_pack[i];
+            A[i * max_input_dim/block_parallel + k] = A_pack[i];
             // A[k * block_parallel + i] = A_pack[i];
         }
     }
 
     weight_block_loop: for(int N = 0; N < output_hidden_dim/(block_parallel * weight_parallel); N++){
     #pragma HLS DATAFLOW
-        init_block_AB: for(int k = 0; k < input_hidden_dim; k++){
-        #pragma HLS PIPELINE II=1
-            for (int i = 0; i < block_parallel; i++) {
-                block_A_loader[i].write(A[k]);
-                block_B_loader[i].write(weight_loaders[i].read());
+        init_block_AB: for(int K = 0; K < block_parallel; K++){
+            for(int k = 0; k < input_hidden_dim/block_parallel; k++){
+            #pragma HLS PIPELINE II=1
+                for (int i = 0; i < block_parallel; i++) {
+                    block_A_loader[i].write(A[K * max_input_dim/block_parallel + k]);
+                    block_B_loader[i].write(weight_loaders[i].read());
+                }
             }
         }
         
