@@ -1,4 +1,5 @@
 # 🔥 FlexLLM: A Composable HLS Library for Rapid LLM Accelerator Design
+[![DOI](https://zenodo.org/badge/1109534356.svg)](https://doi.org/10.5281/zenodo.18793354)
 
 FlexLLM is a **composable High-Level Synthesis (HLS) library** for rapidly building **hybrid temporal–spatial accelerators** for Large Language Models (LLMs).  
 It provides parameterized module templates, optimized memory-access/dataflow components, and a complete quantization suite, enabling FPGA-based LLM systems to be built with **minimal manual engineering effort**.
