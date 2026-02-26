@@ -71,9 +71,9 @@ https://drive.google.com/drive/folders/1KyEL9gC9Wge9l1m5t2lc79uQhK0jYyq8?usp=sha
 Place them in:
 
 ```
-FlexLLM/your_model/parameters/
-FlexLLM/your_model/run/parameters/
-FlexLLM/your_model/run/llama-3.2-1b-f16.gguf
+FlexLLM/SpinQuant_Llama_32_1B_Ins/parameters/
+FlexLLM/SpinQuant_Llama_32_1B_Ins/run/parameters/
+FlexLLM/SpinQuant_Llama_32_1B_Ins/run/llama-3.2-1b-f16.gguf
 ```
 
 ---
